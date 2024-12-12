@@ -504,4 +504,55 @@ Hide <<control bus>> stereotype
 !define Send(_from, _to) _from --> _to
 
 !define Pipe(_from, _to) _from --> _to : Pipe
+@startuml
+
+'!include <EIPPlantUML/EIP>
+
+' Define actors and endpoints
+actor "User Interaction" as user
+queue "Web App" as webApp
+queue "Mobile App" as mobileApp
+
+' Backend and services
+queue "Backend API" as backendApi
+queue "Message Storage" as messageStorage
+queue "Message Translator" as messageTranslator
+queue "Message Router" as messageRouter
+queue "Content Enricher" as contentEnricher
+queue "Notification Service" as notificationService
+queue "Content Delivery Network (CDN)" as cdn
+queue "Social Media Platforms" as socialMedia
+
+' EIP patterns implementation
+user --> EIP_RequestReply : "Upload Photo"
+EIP_RequestReply --> webApp : "Process Web Request"
+EIP_RequestReply --> mobileApp : "Process Mobile Request"
+
+webApp --> backendApi : "Request Handling"
+mobileApp --> backendApi : "Request Handling"
+backendApi --> EIP_MessageStore : "Store Messages"
+EIP_MessageStore --> messageStorage
+
+backendApi --> EIP_MessageTranslator : "Translate Requests"
+EIP_MessageTranslator --> messageTranslator
+
+messageTranslator --> EIP_MessageRouter : "Route Requests"
+EIP_MessageRouter --> messageRouter
+
+messageRouter --> EIP_ContentEnricher : "Enrich Content"
+EIP_ContentEnricher --> contentEnricher
+
+backendApi --> EIP_PublishSubscribe : "Notify Users"
+EIP_PublishSubscribe --> notificationService
+
+contentEnricher --> EIP_ContentDelivery : "Deliver Media"
+EIP_ContentDelivery --> cdn
+
+backendApi --> EIP_ExternalGateway : "Post to Social Media"
+EIP_ExternalGateway --> socialMedia
+
+notificationService --> user : "Send Notifications"
+cdn --> user : "Deliver Media"
+
+@enduml
 
